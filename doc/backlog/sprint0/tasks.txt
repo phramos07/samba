@@ -1,0 +1,28 @@
+====================================
+PRODUCT BACKLOG
+====================================
+
+Architectural planning
+	(2 hours)
+	Plan all the architecture of the application: since front-end to back end and storage. Draw module schemes. Make it clear what the application will be.
+
+Learn about SpringBoot framework
+	(3 hours)
+	Read the documentation online and get to know the basics of Spring framework.
+
+Start and deploy a simple SpringBoot web application
+	3 hours
+
+Learn about Amazon's S3 Storage Service
+	(2 hours)
+	Read the documentation online and get to know how to basically setup a module that will read/write from/to Amazon storage services.
+	Open a free account on Amazon's S3.
+
+Learn about Zencoder
+	(1 hour)
+	Open a free account at Zencoder. Learn how to use their client API to convert videos and to stream it online.
+
+Set up JUnit
+	(2 hours)
+	Set up JUnit on the repository and service layers. Set up an automatic run.
+

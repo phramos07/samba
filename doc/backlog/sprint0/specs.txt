@@ -1,0 +1,10 @@
+====================================
+MINIMUM VIABLE PRODUCT
+====================================
+
+DESCRIPTION
+
+A simple web application using the framework Spring that is able to upload a
+video to the Amazon S3 storage services, convert it to webm format and then
+stream the video through a videoplayer.
+
