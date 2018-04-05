@@ -4,3 +4,4 @@
 /Users/pedroramos/Documents/samba/samba/src/main/java/encoder/interfaces/repos/IEncoderRepo.java
 /Users/pedroramos/Documents/samba/samba/src/main/java/encoder/interfaces/services/IEncoderService.java
 /Users/pedroramos/Documents/samba/samba/src/main/java/encoder/app/controllers/EncoderController.java
+/Users/pedroramos/Documents/samba/samba/src/main/java/encoder/app/repos/AmazonClient.java

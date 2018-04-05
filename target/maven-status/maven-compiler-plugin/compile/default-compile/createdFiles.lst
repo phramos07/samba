@@ -1,6 +1,0 @@
-encoder/interfaces/services/IEncoderService.class
-encoder/app/controllers/EncoderController.class
-encoder/app/Application.class
-encoder/app/repos/EncoderRepo.class
-encoder/app/services/EncoderService.class
-encoder/interfaces/repos/IEncoderRepo.class

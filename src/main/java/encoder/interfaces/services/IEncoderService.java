@@ -1,5 +1,13 @@
 package encoder.interfaces.services;
 
-public interface IEncoderService {
+import java.nio.file.Path;
 
+import org.springframework.web.multipart.MultipartFile;
+
+public interface IEncoderService {
+    void init();
+
+    void store(MultipartFile file);
+
+    Path load(String filename);
 };
