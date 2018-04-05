@@ -27,3 +27,7 @@ bin
 .project
 mvnw
 mvnw.cmd
+
+.gradle
+.sts4-cache
+.vscode

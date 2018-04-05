@@ -11,7 +11,7 @@ Learn about SpringBoot framework
 	Read the documentation online and get to know the basics of Spring framework.
 
 Start and deploy a simple SpringBoot web application
-	3 hours
+	(3 hours)
 
 Learn about Amazon's S3 Storage Service
 	(2 hours)

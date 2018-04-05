@@ -1,0 +1,27 @@
+====================================
+PRODUCT BACKLOG
+====================================
+
+Video streaming page
+    (4 hours)
+
+Controller Module
+    (2 hours)
+
+Service Module: encoding of video file to .webm format
+    (8 hours)
+
+Repository Module: storing the file at amazon's S3 storage service
+    (8 hours)
+
+Unit test for Controller
+    (2 hours)
+
+Unit test for Service
+    (4 hours)
+
+Unit test for Repository
+    (4 hours)
+
+Website stylization
+    (3 hours)
