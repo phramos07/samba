@@ -1,8 +1,10 @@
 package encoder.app.repos;
 
 import java.io.File;
-
-import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -11,11 +13,13 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 
 @ConfigurationProperties
 public class AmazonClient {
@@ -26,7 +30,7 @@ public class AmazonClient {
     //understanding where I should put the configuration file and which annotation systems I should use.
 
     // @Value("${amazonProperties.endpointUrl}")
-    private static String endpointUrl = "https://s3.us-east-2.amazonaws.com";
+    private static String endpointUrl = "https://s3-us-west-1.amazonaws.com";
     
     // @Value("${amazonProperties.bucketName}")
     private static String bucketName = "phsamba";
@@ -66,15 +70,61 @@ public class AmazonClient {
         }
     }
 
+    private InputStream downloadFileFromS3bucket(String filename) {
+        try {
+            System.out.println("Downloading an object");
+            S3Object s3object = s3Client.getObject(new GetObjectRequest(
+                    bucketName, filename));
+            System.out.println("Content-Type: "  + 
+            		s3object.getObjectMetadata().getContentType());
+            
+            return s3object.getObjectContent();
+
+        } catch (AmazonServiceException ase) {
+            System.out.println("Caught an AmazonServiceException, which" +
+            		" means your request made it " +
+                    "to Amazon S3, but was rejected with an error response" +
+                    " for some reason.");
+            System.out.println("Error Message:    " + ase.getMessage());
+            System.out.println("HTTP Status Code: " + ase.getStatusCode());
+            System.out.println("AWS Error Code:   " + ase.getErrorCode());
+            System.out.println("Error Type:       " + ase.getErrorType());
+            System.out.println("Request ID:       " + ase.getRequestId());
+        } catch (AmazonClientException ace) {
+            System.out.println("Caught an AmazonClientException, which means"+
+            		" the client encountered " +
+                    "an internal error while trying to " +
+                    "communicate with S3, " +
+                    "such as not being able to access the network.");
+            System.out.println("Error Message: " + ace.getMessage());
+        }
+
+        return new InputStream(){
+        
+            @Override
+            public int read() throws IOException {
+                return 0;
+            }
+        };
+    }
+
+    public String getFilePath(String filename) {
+        return endpointUrl + "/" + bucketName + "/" + filename;
+    }
+    
     public String uploadFile(File file) {
         String fileUrl = "";
         try {
-            fileUrl = endpointUrl + "/" + bucketName + "/" + file.getName() + ".webm";
-            uploadFileTos3bucket(file.getName(), file);
+            fileUrl = file.getName() + ".webm";
+            uploadFileTos3bucket(fileUrl, file);
             file.delete();
         } catch (Exception e) {
            e.printStackTrace();
         }
         return fileUrl;
+    }
+
+    public InputStream downloadFile(String filename) {
+        return this.downloadFileFromS3bucket(filename);
     }
 }

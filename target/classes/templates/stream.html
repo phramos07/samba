@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>SambaTech's Encoder</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+</head>
+<body>
+    <div class="div">
+        <video width="320" height="240" controls="controls" autoplay="autoplay">
+            <source th:src="${source}" type="video/webm"/>
+            Your browser does not support the video tag.
+        </video>
+    </div>
+</body>
+</html>

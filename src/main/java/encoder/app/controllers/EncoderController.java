@@ -1,11 +1,16 @@
 package encoder.app.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,11 +56,19 @@ public class EncoderController {
             redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-            return "redirect:/watch";
+            return "redirect:/stream";
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/sorry";
         }
+    }
+
+    @GetMapping("/stream")
+    public String watchVideo(Model model) {
+        String link = _encoderService.loadLastUploadedFilePath();
+        model.addAttribute("source", link);
+
+        return "stream";
     }
 
 }

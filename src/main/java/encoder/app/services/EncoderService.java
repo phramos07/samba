@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +23,8 @@ public class EncoderService implements IEncoderService {
 
     @Autowired
     public EncoderService(IEncoderRepo encoderRepo) {
-        this._encoderRepo = encoderRepo;
+		this._encoderRepo = encoderRepo;
+		this.lastUploadedVideo = "";
     }
 
 	@Override
@@ -41,8 +43,8 @@ public class EncoderService implements IEncoderService {
 	}
 
 	@Override
-	public Path load(String filename) {
-		return (Path) this._encoderRepo.load(filename);
+	public File load() {
+		return this._encoderRepo.load(this.lastUploadedVideo);
 	}
 
 	private File convertMultiPartToFile(MultipartFile file) throws IOException {
@@ -56,4 +58,9 @@ public class EncoderService implements IEncoderService {
     private String generateFileName(MultipartFile file) {
         return new Date().getTime() + "-" + file.getOriginalFilename().replace(" ", "_");
     }
+
+	@Override
+	public String loadLastUploadedFilePath() {
+		return this._encoderRepo.loadFilePath(this.lastUploadedVideo);
+	}
 }

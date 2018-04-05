@@ -1,7 +1,9 @@
 package encoder.interfaces.services;
 
+import java.io.File;
 import java.nio.file.Path;
 
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface IEncoderService {
@@ -9,5 +11,7 @@ public interface IEncoderService {
 
     void store(MultipartFile file);
 
-    Path load(String filename);
+    File load();
+
+    String loadLastUploadedFilePath();
 };
