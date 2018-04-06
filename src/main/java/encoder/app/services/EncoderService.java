@@ -21,25 +21,37 @@ public class EncoderService implements IEncoderService {
 	
 	private String lastUploadedVideo;
 
+	private ZencoderUtil zencoder;
+
+	private static String encodedSuffix = "-ENCODED.webm";
+
     @Autowired
     public EncoderService(IEncoderRepo encoderRepo) {
 		this._encoderRepo = encoderRepo;
 		this.lastUploadedVideo = "";
+		this.zencoder = new ZencoderUtil();
     }
+
+	public String getLastUploadedVideo() {
+		return lastUploadedVideo;
+	}
 
 	@Override
 	public void init() {}
 
 	@Override
 	public void store(MultipartFile file) {
-		//CONVERT FILE TO WEBM VIDEO
-
-
 		try {
 			this.lastUploadedVideo = _encoderRepo.store(this.convertMultiPartToFile(file));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		zencoder.encode(this.lastUploadedVideo, this.lastUploadedVideo + encodedSuffix);
+		//use zencoder utility to
+		//1) get lastUploadedVideo from S3
+		//2) encode it and save it to S3
+		//Now, get the lastUploadedVideo updated
 	}
 
 	@Override
@@ -61,6 +73,6 @@ public class EncoderService implements IEncoderService {
 
 	@Override
 	public String loadLastUploadedFilePath() {
-		return this._encoderRepo.loadFilePath(this.lastUploadedVideo);
+		return this._encoderRepo.loadFilePath(this.lastUploadedVideo + encodedSuffix);
 	}
 }

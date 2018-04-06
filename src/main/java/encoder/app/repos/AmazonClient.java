@@ -3,13 +3,12 @@ package encoder.app.repos;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.elastictranscoder.model.Warning;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -18,8 +17,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 
 @ConfigurationProperties
 public class AmazonClient {
@@ -30,10 +27,10 @@ public class AmazonClient {
     //understanding where I should put the configuration file and which annotation systems I should use.
 
     // @Value("${amazonProperties.endpointUrl}")
-    private static String endpointUrl = "https://s3-us-west-1.amazonaws.com";
+    public static String endpointUrl = "https://s3-us-west-1.amazonaws.com";
     
     // @Value("${amazonProperties.bucketName}")
-    private static String bucketName = "phsamba";
+    public static String bucketName = "phsamba";
     
     // @Value("${amazonProperties.accessKey}")
     private static String accessKey = "AKIAIMKOYOYHI25RNSCQ";
@@ -41,6 +38,7 @@ public class AmazonClient {
     // @Value("${amazonProperties.secretKey}")
     private static String secretKey = "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";
  
+    @SuppressWarnings("deprecation")
     public AmazonClient() {
         AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
         this.s3Client = new AmazonS3Client(credentials);
@@ -115,7 +113,7 @@ public class AmazonClient {
     public String uploadFile(File file) {
         String fileUrl = "";
         try {
-            fileUrl = file.getName() + ".webm";
+            fileUrl = file.getName();
             uploadFileTos3bucket(fileUrl, file);
             file.delete();
         } catch (Exception e) {
