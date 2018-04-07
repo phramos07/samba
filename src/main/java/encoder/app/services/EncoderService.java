@@ -3,11 +3,9 @@ package encoder.app.services;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,10 +46,6 @@ public class EncoderService implements IEncoderService {
 		}
 
 		zencoder.encode(this.lastUploadedVideo, this.lastUploadedVideo + encodedSuffix);
-		//use zencoder utility to
-		//1) get lastUploadedVideo from S3
-		//2) encode it and save it to S3
-		//Now, get the lastUploadedVideo updated
 	}
 
 	@Override

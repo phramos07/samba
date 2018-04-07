@@ -7,12 +7,24 @@
 </head>
 <body>
     <div class="div">
-        <form method="POST" enctype="multipart/form-data" action="/uploadVideo">
-            <input type="file" name="file"/>
-            <button class="button">
-                UPLOAD VIDEO
-                <input type="submit" value="Upload" />
-            </button>
+        <form onsubmit="location.href='/loading'" method="POST" enctype="multipart/form-data" action="/uploadVideo" >
+            <div>
+                <label for="file_upload" class="button">
+                    <input id="file_upload"  type="file" name="file"/>
+                    SELECT VIDEO
+                </label>
+            </div>
+            <div>
+                <label for="file_submit" class="button">
+                    <input id="file_submit" type="submit" value="Upload"/>
+                    WATCH IT
+                </label>
+            </div>
+            <!-- <c:if test="${loading}">
+                <div class="div">
+                    <div class="loader"></div>
+                </div>
+            </c:if>             -->
         </form>
     </div>
 </body>

@@ -1,21 +1,35 @@
 package encoder.app.services;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
+import org.springframework.web.util.UriBuilder;
 
 public class ZencoderUtil {
     private static String FULLACCESS_KEY = "ca5923adbe8a0d0d896212c4ca94e5c3";
 
-    private static String READONLY_KEY = "5c2464cb6b472667979f90fb80028e2e";
+    // private static String READONLY_KEY = "5c2464cb6b472667979f90fb80028e2e";
 
     private static String S3REGION_BUCKET = "s3+us-west-1://phsamba/";
 
     private static String ZENCODER_JOBS_URL = "https://app.zencoder.com/api/v2/jobs";
+
+    private static String ZENCODER_JOB_PROGRESS_URL = "https://app.zencoder.com/api/v1/jobs/:jobId/";
  
     private String requestJSON(String inputFilename, String outputFilename) {
         try {
@@ -44,6 +58,48 @@ public class ZencoderUtil {
         }
     }
 
+    private String jobState(String jobId) throws IOException {
+        try {
+            // URL url = new URL("https://app.zencoder.com/api/v1/jobs/jobId?" + jobId + "/progress");
+            URL url = new URL(ZENCODER_JOBS_URL + "/" + jobId + "?api_key=" + FULLACCESS_KEY);
+            
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            // Setting Header
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Zencoder-Api-Key", FULLACCESS_KEY);
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            
+            // String charset = "UTF-8";
+            // String s = "jobId=" + URLEncoder.encode(jobId, charset);
+            // connection.setFixedLengthStreamingMode(s.getBytes().length);
+            // DataOutputStream st = new DataOutputStream(connection.getOutputStream());
+            // st.writeBytes(s);
+            // st.flush();
+            // st.close();
+            connection.getResponseCode();
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+    
+            JSONObject responseJSON = new JSONObject(response.toString());
+            JSONObject jobJSON = (JSONObject) responseJSON.get("job");
+            
+            String progress = jobJSON.getString("state");
+            
+            connection.disconnect();
+
+            return progress;
+        } catch (IOException e) {
+            throw e;
+        }
+    }
+
     public void encode(String inputFilename, String outputFilename) {
         try {
             // Create connection.
@@ -62,6 +118,30 @@ public class ZencoderUtil {
             st.flush();
             st.close();
             connection.getResponseCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+
+            JSONObject responseJSON = new JSONObject(response.toString());
+            String jobId = responseJSON.getString("id");
+            
+            connection.disconnect();
+
+            boolean fullEncoding;
+            do {
+                fullEncoding=false;
+                String progress = jobState(jobId);
+                
+                if (progress.equals("finished"))
+                    fullEncoding = true;
+
+            } while(!fullEncoding);
+
+
+
           } catch(Exception e){
             e.printStackTrace();
           }
