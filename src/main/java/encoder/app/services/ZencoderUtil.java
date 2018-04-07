@@ -1,24 +1,13 @@
 package encoder.app.services;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
-import org.springframework.web.util.UriBuilder;
 
 public class ZencoderUtil {
     private static String FULLACCESS_KEY = "ca5923adbe8a0d0d896212c4ca94e5c3";
@@ -29,7 +18,7 @@ public class ZencoderUtil {
 
     private static String ZENCODER_JOBS_URL = "https://app.zencoder.com/api/v2/jobs";
 
-    private static String ZENCODER_JOB_PROGRESS_URL = "https://app.zencoder.com/api/v1/jobs/:jobId/";
+    // private static String ZENCODER_JOB_PROGRESS_URL = "https://app.zencoder.com/api/v1/jobs/:jobId/";
  
     private String requestJSON(String inputFilename, String outputFilename) {
         try {
@@ -100,7 +89,7 @@ public class ZencoderUtil {
         }
     }
 
-    public void encode(String inputFilename, String outputFilename) {
+    public void encode(String inputFilename, String outputFilename) throws EncoderException {
         try {
             // Create connection.
             URL url = new URL(ZENCODER_JOBS_URL);
@@ -134,15 +123,21 @@ public class ZencoderUtil {
             do {
                 fullEncoding=false;
                 String progress = jobState(jobId);
-                
-                if (progress.equals("finished"))
+
+                if (progress.equals("finished")) 
                     fullEncoding = true;
+                
+                // if (progress.equals("processing"))
+                //     continue;
+                
+                if (progress.equals("failed"))
+                    throw new EncoderException("Impossible to encode this file");
 
             } while(!fullEncoding);
 
 
 
-          } catch(Exception e){
+          } catch(IOException e){
             e.printStackTrace();
           }
     }

@@ -38,14 +38,15 @@ public class EncoderService implements IEncoderService {
 	public void init() {}
 
 	@Override
-	public void store(MultipartFile file) {
+	public void store(MultipartFile file) throws EncoderException, IOException {
 		try {
 			this.lastUploadedVideo = _encoderRepo.store(this.convertMultiPartToFile(file));
+			zencoder.encode(this.lastUploadedVideo, this.lastUploadedVideo + encodedSuffix);
+		} catch (EncoderException e) {
+			throw e;
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw e;
 		}
-
-		zencoder.encode(this.lastUploadedVideo, this.lastUploadedVideo + encodedSuffix);
 	}
 
 	@Override
