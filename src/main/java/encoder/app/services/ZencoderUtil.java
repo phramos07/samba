@@ -115,7 +115,7 @@ public class ZencoderUtil {
             }
 
             JSONObject responseJSON = new JSONObject(response.toString());
-            String jobId = responseJSON.getString("id");
+            String jobId = responseJSON.get("id").toString();
             
             connection.disconnect();
 
